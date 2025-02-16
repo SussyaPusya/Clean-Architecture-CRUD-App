@@ -1,7 +1,8 @@
 package http
 
 import (
-	"App/internal/config"
+	cfg "App/internal/config"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,7 +12,7 @@ import (
 type Router struct {
 	Router  *mux.Router
 	Handler Handler
-	Config  *config.Config
+	Config  *cfg.Config
 }
 
 func NewRouter(h *Handler) *Router {
@@ -24,9 +25,9 @@ func NewRouter(h *Handler) *Router {
 
 	rout.HandleFunc("/deletedata", h.DeleteData)
 
-	return &Router{Router: rout, Config: config.NewConfig()}
+	return &Router{Router: rout, Config: cfg.NewConfig()}
 }
 
 func (r *Router) Run() {
-	log.Fatal(http.ListenAndServe(r.Config.Port, r.Router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", r.Config.RoutConf.Port), r.Router))
 }
