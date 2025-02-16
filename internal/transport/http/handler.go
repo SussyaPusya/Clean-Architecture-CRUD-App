@@ -19,6 +19,10 @@ type Handler struct {
 	service Service
 }
 
+func NewHandler(service Service) *Handler {
+	return &Handler{service: service}
+}
+
 func (h *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 	bytew, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -45,6 +49,18 @@ func (h *Handler) UpdateData(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) DeleteData(w http.ResponseWriter, r *http.Request) {
+	bytew, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Print("invalid json")
+	}
+	defer r.Body.Close()
+	var user entity.User
+	person := pkg.ParseJson(bytew, user)
+	h.service.DeleteData(person)
+	//вывод что всё адлилос
+}
+
+func (h *Handler) CreateData(w http.ResponseWriter, r *http.Request) {
 	bytew, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Print("invalid json")

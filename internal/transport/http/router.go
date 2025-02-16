@@ -17,6 +17,8 @@ type Router struct {
 func NewRouter(h *Handler) *Router {
 	rout := mux.NewRouter()
 
+	rout.HandleFunc("/createdata", h.CreateData)
+
 	rout.HandleFunc("/getdata", h.GetData)
 	rout.HandleFunc("/updatedata", h.UpdateData)
 
