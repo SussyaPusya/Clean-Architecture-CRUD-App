@@ -9,6 +9,7 @@ import (
 )
 
 type Service interface {
+	CreateData(entity.User) (*entity.User, error)
 	GetData(entity.User) (*entity.User, error)
 	UpdateData(entity.User) (*entity.User, error)
 	DeleteData(entity.User) (*entity.User, error)
