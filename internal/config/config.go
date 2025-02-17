@@ -32,15 +32,15 @@ func NewConfig() *Config {
 	if cfg.RoutConf.Port == "" {
 		cfg.RoutConf.Port = "8080"
 	}
-
 	dbHost := os.Getenv("DB_HOST")
 	if dbHost == "" {
 		dbHost = "localhost"
 	}
 	dbPort := os.Getenv("DB_PORT")
 	if dbPort == "" {
-		dbPort = "5432"
+		dbPort = "5433"
 	}
+
 	dbUser := os.Getenv("DB_USER")
 	if dbUser == "" {
 		dbUser = "postgres"
@@ -51,7 +51,7 @@ func NewConfig() *Config {
 	}
 	dbName := os.Getenv("DB_NAME")
 	if dbName == "" {
-		dbName = "bookstore"
+		dbName = "UserData"
 	}
 
 	return &cfg

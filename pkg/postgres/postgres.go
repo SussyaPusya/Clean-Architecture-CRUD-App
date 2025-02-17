@@ -2,15 +2,17 @@ package postgres
 
 import (
 	"App/internal/config"
-	"database/sql"
+
 	"fmt"
+
+	pg "gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-func NewPosgrs(cfg config.DbCOnfig) (*sql.DB, error) {
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Database)
+func NewPosgrs(cfg config.DbCOnfig) (*gorm.DB, error) {
+	dns := "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable"
 
-	database, err := sql.Open("postgres", connStr)
+	database, err := gorm.Open(pg.Open(dns), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("NewPostgres: %w", err)
 	}

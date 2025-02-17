@@ -15,7 +15,7 @@ type Router struct {
 	Config  *cfg.Config
 }
 
-func NewRouter(h *Handler) *Router {
+func NewRouter(h *Handler, cfg *cfg.Config) *Router {
 	rout := mux.NewRouter()
 
 	rout.HandleFunc("/createdata", h.CreateData)
@@ -25,7 +25,7 @@ func NewRouter(h *Handler) *Router {
 
 	rout.HandleFunc("/deletedata", h.DeleteData)
 
-	return &Router{Router: rout, Config: cfg.NewConfig()}
+	return &Router{Router: rout, Config: cfg}
 }
 
 func (r *Router) Run() {
