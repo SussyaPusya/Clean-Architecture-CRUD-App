@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"App/internal/config"
+	"App/internal/entity"
 
 	"fmt"
 
@@ -10,13 +11,20 @@ import (
 )
 
 func NewPosgrs(cfg config.DbCOnfig) (*gorm.DB, error) {
-	dns := "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable"
 
-	database, err := gorm.Open(pg.Open(dns), &gorm.Config{})
+	database, err := gorm.Open(pg.Open(cfg.Dns), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("NewPostgres: %w", err)
 	}
 
 	return database, nil
 
+}
+
+func TransformStruct(user entity.User) *entity.UserDb {
+	return &entity.UserDb{UserName: user.UserName, Password: user.Password, BirhDay: user.BirhDay}
+}
+
+func ReversTransStruct(user entity.UserDb) *entity.User {
+	return &entity.User{UserName: user.UserName, Password: user.Password, BirhDay: user.BirhDay}
 }
