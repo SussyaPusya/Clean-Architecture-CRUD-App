@@ -53,3 +53,47 @@ func TestGetData(t *testing.T) {
 	fmt.Println(pers)
 
 }
+
+func TestUpdateData(t *testing.T) {
+	db, err := postgres.NewPosgrs(config.NewConfig().DbCfg)
+	if err != nil {
+		t.Error("Кал дб не робит")
+	}
+
+	repo := repository.NewRepository(db)
+
+	bob := entity.User{
+		UserName: "Jhane",
+		Password: "Eode",
+		Auth:     "553213",
+		BirhDay:  "UThvf.231312",
+	}
+
+	err = repo.UpdateData(bob)
+	if err != nil {
+		t.Error("cal")
+	}
+
+}
+
+func TestDeleteData(t *testing.T) {
+	db, err := postgres.NewPosgrs(config.NewConfig().DbCfg)
+	if err != nil {
+		t.Error("Кал дб не робит")
+	}
+
+	repo := repository.NewRepository(db)
+
+	bob := entity.User{
+		UserName: "Nazi1k",
+		Password: "1212334",
+		Auth:     "553213",
+		BirhDay:  "1231223",
+	}
+
+	err = repo.DeleteData(bob)
+	if err != nil {
+		t.Error("cal")
+	}
+
+}

@@ -3,6 +3,7 @@ package repository
 import (
 	"App/internal/entity"
 	utils "App/pkg/postgres"
+	"fmt"
 	"log"
 
 	"gorm.io/gorm"
@@ -40,11 +41,31 @@ func (r *Repository) CreateData(user entity.User) error {
 
 }
 
-// func (r *Repository) UpdateData(user entity.User) error {
-// 	usa := utils.TransformStruct(user)
+func (r *Repository) UpdateData(user entity.User) error {
+	var person entity.UserDb
+	usa := utils.TransformStruct(user)
 
-// }
+	r.DB.Where(&usa).First(&person)
 
-// func (r *Repository) DeleteData(user entity.User) (*entity.User, error) {
+	r.DB.Delete(entity.UserDb{}, person.ID)
 
-// }
+	pers := utils.ReversTransStruct(*usa)
+
+	r.CreateData(*pers)
+
+	return nil
+
+}
+
+func (r *Repository) DeleteData(user entity.User) error {
+
+	var person entity.UserDb
+	usa := utils.TransformStruct(user)
+
+	r.DB.Where(&entity.UserDb{}).First(&person)
+	fmt.Println(usa)
+	r.DB.Delete(&person)
+
+	return nil
+
+}

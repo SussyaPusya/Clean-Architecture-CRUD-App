@@ -56,9 +56,17 @@ func (h *Handler) UpdateData(w http.ResponseWriter, r *http.Request) {
 		log.Print("invalid json")
 	}
 	defer r.Body.Close()
+
 	var user entity.User
 	person := pkg.ParseJson(bytew, user)
-	h.service.UpdateData(person)
+	err = h.service.UpdateData(person)
+
+	if err != nil {
+		fmt.Fprintln(w, "Filed to update password")
+	}
+
+	fmt.Fprintln(w, "Updated done")
+
 	// вывод обновлённых данных
 
 }
