@@ -24,6 +24,7 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Чтобы получить дату надо отправить json с полем name
 func (h *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 	bytew, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -33,16 +34,12 @@ func (h *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	person := pkg.ParseJson(bytew, user)
 
-	jsnResp, err := h.service.GetData(person)
-	if err != nil {
-		fmt.Fprintln(w, "Filed to get data, err: ", err)
-		w.WriteHeader(http.StatusInternalServerError)
-	}
+	jsnResp, _ := h.service.GetData(person)
 
 	jsonBytes, err := pkg.ToJson(*jsnResp)
 	if err != nil {
 		fmt.Fprintln(w, "Filed to get data, err: ", err)
-		w.WriteHeader(http.StatusInternalServerError)
+
 	}
 
 	fmt.Fprintln(w, string(jsonBytes))
@@ -62,7 +59,8 @@ func (h *Handler) UpdateData(w http.ResponseWriter, r *http.Request) {
 	err = h.service.UpdateData(person)
 
 	if err != nil {
-		fmt.Fprintln(w, "Filed to update password")
+		fmt.Println(err)
+		return
 	}
 
 	fmt.Fprintln(w, "Updated done")
@@ -74,12 +72,14 @@ func (h *Handler) UpdateData(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) DeleteData(w http.ResponseWriter, r *http.Request) {
 	bytew, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Print("invalid json")
+		log.Print("invalid json", err)
 	}
 	defer r.Body.Close()
 	var user entity.User
 	person := pkg.ParseJson(bytew, user)
 	h.service.DeleteData(person)
+
+	fmt.Fprintln(w, "Deleted Done!")
 	//вывод что всё адлилос
 }
 

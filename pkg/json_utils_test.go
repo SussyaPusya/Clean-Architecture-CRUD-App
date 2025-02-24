@@ -22,24 +22,6 @@ func TestParseJson(t *testing.T) {
 
 }
 
-func TestValidAuth(t *testing.T) {
-	test := []entity.User{
-		{UserName: "bob", Auth: "Yes"},
-		{UserName: "231", Auth: "No"},
-		{UserName: "3", Auth: "yes"},
-		{UserName: "12", Auth: "asd"},
-	}
-	expectedt := []bool{true, false, true, false}
-
-	for i, val := range test {
-		if expectedt[i] != pkg.ValidAuth(val) {
-			fmt.Println(expectedt[i], pkg.ValidAuth(val))
-			t.Error("КААААЛ")
-		}
-
-	}
-}
-
 func TestToJsn(t *testing.T) {
 	bob := entity.User{
 		UserName: "Jhane",

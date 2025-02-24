@@ -2,8 +2,7 @@ package service
 
 import (
 	"App/internal/entity"
-	utils "App/pkg"
-	erro "App/pkg/erro.go"
+	"fmt"
 	"log"
 )
 
@@ -23,13 +22,10 @@ func NewService(repo Repository) *Service {
 }
 
 func (s *Service) CreateData(user entity.User) error {
-	if utils.ValidAuth(user) {
-		return erro.ErrAuth
-	}
 
 	err := s.repo.CreateData(user)
 	if err != nil {
-		log.Fatal("Err: never create data")
+		log.Fatal("Err: never create data", err)
 	}
 
 	return nil
@@ -37,41 +33,34 @@ func (s *Service) CreateData(user entity.User) error {
 }
 
 func (s *Service) GetData(user entity.User) (*entity.User, error) {
-	if utils.ValidAuth(user) {
-		person, err := s.repo.GetData(user)
-		if err != nil {
 
-		}
-
-		return person, nil
+	person, err := s.repo.GetData(user)
+	if err != nil {
+		return &entity.User{}, fmt.Errorf("zalupa %e", err)
 
 	}
-	return nil, erro.ErrUnauth
+
+	return person, nil
 
 }
 func (s *Service) UpdateData(user entity.User) error {
-	if utils.ValidAuth(user) {
-		err := s.repo.UpdateData(user)
-		if err != nil {
 
-		}
-
-		return nil
+	err := s.repo.UpdateData(user)
+	if err != nil {
+		return fmt.Errorf("zalupa %e", err)
 
 	}
-	return erro.ErrUnauth
+	return nil
 
 }
 func (s *Service) DeleteData(user entity.User) error {
-	if utils.ValidAuth(user) {
-		err := s.repo.DeleteData(user)
-		if err != nil {
 
-		}
-
-		return nil
+	err := s.repo.DeleteData(user)
+	if err != nil {
+		return fmt.Errorf("zalupa %e", err)
 
 	}
-	return erro.ErrUnauth
+
+	return nil
 
 }

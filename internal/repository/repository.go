@@ -2,70 +2,69 @@ package repository
 
 import (
 	"App/internal/entity"
-	utils "App/pkg/postgres"
-	"fmt"
-	"log"
-
-	"gorm.io/gorm"
+	errogo "App/pkg/erro.go"
+	"sync"
 )
 
 type Repository struct {
-	DB *gorm.DB
+	Redis map[string]*entity.User
+	mu    sync.Mutex
 }
 
-func NewRepository(db *gorm.DB) *Repository {
-	return &Repository{DB: db}
+func NewRepository() *Repository {
+
+	return &Repository{Redis: make(map[string]*entity.User), mu: sync.Mutex{}}
 }
 
 func (r *Repository) GetData(user entity.User) (*entity.User, error) {
-	var person entity.UserDb
-	usa := utils.TransformStruct(user)
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	data, ok := r.Redis[user.UserName]
+	if ok {
+		return data, nil
+	}
 
-	r.DB.Where(&usa).First(&person)
-
-	user = *utils.ReversTransStruct(person)
-	return &user, nil
+	return &entity.User{}, errogo.ErrUsrNotFOund
 
 }
 
 func (r *Repository) CreateData(user entity.User) error {
-
-	usa := utils.TransformStruct(user)
-
-	result := r.DB.Create(&usa)
-	if result.Error != nil {
-		log.Fatal(result.Error)
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	_, ok := r.Redis[user.UserName]
+	if ok {
+		return errogo.ErrUsrREg
 	}
-
+	r.Redis[user.UserName] = &user
 	return nil
 
 }
 
 func (r *Repository) UpdateData(user entity.User) error {
-	var person entity.UserDb
-	usa := utils.TransformStruct(user)
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	_, ok := r.Redis[user.UserName]
+	if ok {
+		r.Redis[user.UserName] = &user
 
-	r.DB.Where(&usa).First(&person)
+		return nil
+	}
 
-	r.DB.Delete(entity.UserDb{}, person.ID)
-
-	pers := utils.ReversTransStruct(*usa)
-
-	r.CreateData(*pers)
-
-	return nil
+	return errogo.ErrUsrNotFOund
 
 }
 
 func (r *Repository) DeleteData(user entity.User) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	_, ok := r.Redis[user.UserName]
 
-	var person entity.UserDb
-	usa := utils.TransformStruct(user)
+	if ok {
+		delete(r.Redis, user.UserName)
 
-	r.DB.Where(&entity.UserDb{}).First(&person)
-	fmt.Println(usa)
-	r.DB.Delete(&person)
+		return nil
+	}
 
-	return nil
+	return errogo.ErrUsrNotFOund
 
 }

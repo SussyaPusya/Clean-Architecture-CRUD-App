@@ -5,7 +5,6 @@ import (
 	"App/internal/repository"
 	"App/internal/service"
 	router "App/internal/transport/http"
-	"App/pkg/postgres"
 )
 
 func main() {
@@ -14,12 +13,7 @@ func main() {
 
 	config := cfg.NewConfig()
 
-	db, err := postgres.NewPosgrs(config.DbCfg)
-	if err != nil {
-
-	}
-
-	repo := repository.NewRepository(db)
+	repo := repository.NewRepository()
 
 	service := service.NewService(repo)
 

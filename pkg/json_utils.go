@@ -4,7 +4,6 @@ import (
 	"App/internal/entity"
 	"encoding/json"
 	"log"
-	"strings"
 )
 
 func ParseJson(bytes []byte, bob entity.User) entity.User {
@@ -16,12 +15,6 @@ func ParseJson(bytes []byte, bob entity.User) entity.User {
 	}
 	return bob
 
-}
-
-func ValidAuth(bob entity.User) bool {
-	str := strings.ToLower(bob.Auth)
-
-	return str == "yes"
 }
 
 func ToJson(user entity.User) ([]byte, error) {
